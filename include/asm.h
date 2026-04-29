@@ -28,7 +28,14 @@ enum args_type_e {
                         indirect) */
 } typedef args_type_t;
 
+    #define IS_REG(t) ((t & T_REG) == T_REG)
+    #define IS_DIR(t) ((t & T_DIR) == T_DIR)
+    #define IS_INDIR(t) ((t & T_IND) == T_IND)
+    #define IS_INDEX(t) ((t & T_INDEX) == T_INDEX)
+
 typedef char byte_t;
+
+typedef int (*op_function_t)(byte_t *, int[4], void *);
 
 typedef struct op_s {
     char *mnemonique;
@@ -38,6 +45,7 @@ typedef struct op_s {
     bool coding_byte;
     int nbr_cycles;
     char *comment;
+    op_function_t op_function;
 } op_t;
 
 struct instruction_s {

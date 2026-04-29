@@ -36,7 +36,8 @@ static int read_header(exec_stream_t *stream, FILE *file)
 static exec_stream_t load_the_champion(byte_t *virtual_memory, const char *filename,
     size_t alloc_size, size_t pos)
 {
-    exec_stream_t stream = {0, {0}, {0}, 0, -1, 0, {0, 0, {0}, 0, false, 0, 0}};
+    exec_stream_t stream = {0, {0}, {0}, 0, -1, -1, 0,
+        {0, 0, {0}, 0, false, 0, 0, 0}};
     FILE *file = fopen(filename, "rb");
     size_t size_to_read = alloc_size;
 

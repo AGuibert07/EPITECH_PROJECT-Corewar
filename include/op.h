@@ -70,7 +70,7 @@ static const op_t op_tab[] = {
         "long load indirect"}, // ?
     {"lfork", 1, {T_DIR | T_INDEX}, 15, false, 1000, "long fork"},
     {"print", 1, {T_REG}, 16, true, 2, "print character"},
-    {0, 0, {0}, 0, false, 0, 0}
+    {0, 0, {0}, 0, false, -1, 0, 0}
 };
 
 /*

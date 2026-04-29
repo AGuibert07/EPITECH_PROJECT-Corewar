@@ -22,6 +22,7 @@ struct exec_stream_s {
     char comment[COMMENT_LENGTH + 1];
     int prog_size;
     int pos;
+    int curent_byte;
     int inst_time;
     op_t instruction;
 } typedef exec_stream_t;
