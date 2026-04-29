@@ -17,6 +17,15 @@
 
     #define BYTE_MAX 255
 
+    // header
+    #define PROG_NAME_LENGTH 128
+    #define COMMENT_LENGTH 2048
+    #define COREWAR_EXEC_MAGIC 0xea83f3
+
+    // regs
+    #define REG_NUMBER 16 /* r1 <--> rx */
+    #define IS_A_REG_ID(n) (n > 0 && n <= REG_NUMBER)
+
     // args types
 enum args_type_e {
     T_REG = 1,      // register
@@ -35,7 +44,27 @@ enum args_type_e {
 
 typedef char byte_t;
 
-typedef int (*op_function_t)(byte_t *, int[4], void *);
+struct exec_stream_s {
+    byte_t champion_id;
+    char prog_name[PROG_NAME_LENGTH + 1];
+    char comment[COMMENT_LENGTH + 1];
+    int prog_size;
+    int pos;
+    int curent_byte;
+    int inst_time;
+    op_t instruction;
+    args_type_t types[MAX_ARGS_NUMBER + 1];
+    int args[MAX_ARGS_NUMBER + 1];
+    bool running;
+} typedef exec_stream_t;
+
+struct global_data_s {
+    size_t alive_champions_nbr;
+    size_t lives[MAX_ARGS_NUMBER];
+    int registers[REG_NUMBER];
+} typedef global_data_t;
+
+typedef int (*op_function_t)(byte_t *, exec_stream_t *stream, global_data_t *);
 
 typedef struct op_s {
     char *mnemonique;

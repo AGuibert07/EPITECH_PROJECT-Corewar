@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 #include <byteswap.h>
 #include <stdlib.h>
-#include "stream.h"
+#include "mem.h"
 #include "op.h"
 #include "my.h"
 

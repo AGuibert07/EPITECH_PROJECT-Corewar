@@ -6,7 +6,7 @@
 */
 
 #include <stdbool.h>
-#include "stream.h"
+#include "mem.h"
 #include "op.h"
 #include "asm.h"
 #include "my.h"
@@ -60,20 +60,21 @@ static int get_argument(byte_t *virtual_memory, exec_stream_t *stream,
     return 0;
 }
 
-int execute_instruction(byte_t *virtual_memory, exec_stream_t *stream)
+int execute_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+    global_data_t *global_data)
 {
-    args_type_t types[MAX_ARGS_NUMBER] = {0};
-    int args[MAX_ARGS_NUMBER] = {0};
-
-    get_args_types(virtual_memory, stream, types);
+    get_args_types(virtual_memory, stream, stream->types);
     for (size_t i = 0; i < stream->instruction.nbr_args; ++i)
-        args[i] = get_argument(virtual_memory, stream, types[i]);
-    return stream->instruction.op_function(virtual_memory, args,
-        (void *)(stream));
+        stream->args[i] = get_argument(virtual_memory, stream,
+            stream->types[i]);
+    return stream->instruction.op_function(virtual_memory, stream, global_data);
 }
 
-int execute_tick(byte_t *virtual_memory, exec_stream_t *streams)
+int execute_tick(byte_t *virtual_memory, exec_stream_t *streams,
+    global_data_t *global_data)
 {
+    for (size_t i = 0; i < global_data->alive_champions_nbr; ++i)
+        global_data->lives[i] += 1;
     for (size_t i = 0; streams[i].pos >= 0; ++i) {
         if (streams[i].inst_time <= 0) {
             streams[i].instruction =
@@ -83,8 +84,11 @@ int execute_tick(byte_t *virtual_memory, exec_stream_t *streams)
             streams[i].pos += ((streams[i].inst_time < 0) ? (1) : (0));
         } else if (streams[i].inst_time > 1)
             streams[i].inst_time -= 1;
-        if (streams[i].inst_time == 1)
-            execute_instruction(virtual_memory, &(streams[i]));
+        if (streams[i].inst_time == 1) {
+            execute_instruction(virtual_memory, &(streams[i]), global_data);
+            streams[i].pos += streams[i].curent_byte;
+            streams[i].curent_byte = 0;
+        }
     }
 }
 
@@ -92,13 +96,13 @@ int corewar(int champions_nbr, const char **filenames)
 {
     byte_t *virtual_memory = NULL;
     exec_stream_t *streams = NULL;
-    int registers[REG_NUMBER] = {0};
     bool loop = true;
+    global_data_t global_data = {champions_nbr, {0}, {0}};
 
     if (init_memory(champions_nbr, filenames, &virtual_memory, &streams) !=
         EPITECH_SUCCESS)
         return EPITECH_FAILURE;
     while (loop) {
-        execute_tick(virtual_memory, streams);
+        execute_tick(virtual_memory, streams, &global_data);
     }
 }

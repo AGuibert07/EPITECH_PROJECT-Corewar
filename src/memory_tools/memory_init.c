@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <byteswap.h>
-#include "stream.h"
+#include "mem.h"
 #include "my.h"
 
 static int read_header(exec_stream_t *stream, FILE *file)
@@ -37,7 +37,7 @@ static exec_stream_t load_the_champion(byte_t *virtual_memory, const char *filen
     size_t alloc_size, size_t pos)
 {
     exec_stream_t stream = {0, {0}, {0}, 0, -1, -1, 0,
-        {0, 0, {0}, 0, false, 0, 0, 0}};
+        {0, 0, {0}, 0, false, 0, 0, {0}, {0}, 0}, true};
     FILE *file = fopen(filename, "rb");
     size_t size_to_read = alloc_size;
 

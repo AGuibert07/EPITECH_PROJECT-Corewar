@@ -5,7 +5,7 @@
 ** main file of the project
 */
 
-#include "stream.h"
+#include "mem.h"
 #include "my.h"
 
 int main(int ac, const char **av)
