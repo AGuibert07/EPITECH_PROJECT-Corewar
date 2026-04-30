@@ -44,27 +44,7 @@ enum args_type_e {
 
 typedef char byte_t;
 
-struct exec_stream_s {
-    byte_t champion_id;
-    char prog_name[PROG_NAME_LENGTH + 1];
-    char comment[COMMENT_LENGTH + 1];
-    int prog_size;
-    int pos;
-    int curent_byte;
-    int inst_time;
-    op_t instruction;
-    args_type_t types[MAX_ARGS_NUMBER + 1];
-    int args[MAX_ARGS_NUMBER + 1];
-    bool running;
-} typedef exec_stream_t;
-
-struct global_data_s {
-    size_t alive_champions_nbr;
-    size_t lives[MAX_ARGS_NUMBER];
-    int registers[REG_NUMBER];
-} typedef global_data_t;
-
-typedef int (*op_function_t)(byte_t *, exec_stream_t *stream, global_data_t *);
+typedef int (*op_function_t)(byte_t *, void *, void *);
 
 typedef struct op_s {
     char *mnemonique;
@@ -76,6 +56,31 @@ typedef struct op_s {
     char *comment;
     op_function_t op_function;
 } op_t;
+
+struct exec_stream_s {
+    byte_t champion_id;
+    char prog_name[PROG_NAME_LENGTH + 1];
+    char comment[COMMENT_LENGTH + 1];
+    int prog_size;
+    int registers[REG_NUMBER];
+    int pos;
+    int curent_byte;
+    int inst_time;
+    op_t instruction;
+    args_type_t types[MAX_ARGS_NUMBER + 1];
+    int args[MAX_ARGS_NUMBER + 1];
+    bool running;
+} typedef exec_stream_t;
+
+static const exec_stream_t null_stream = {0, {0}, {0}, 0, {0}, -1, -1, 0,
+    {0, 0, {0}, 0, false, 0, 0, {0}, {0}, 0}, true};
+
+struct global_data_s {
+    size_t alive_champions_nbr;
+    size_t lives[MAX_ARGS_NUMBER];
+    exec_stream_t *streams;
+    size_t progs_nbr;
+} typedef global_data_t;
 
 struct instruction_s {
     op_t op;

@@ -95,14 +95,14 @@ int execute_tick(byte_t *virtual_memory, exec_stream_t *streams,
 int corewar(int champions_nbr, const char **filenames)
 {
     byte_t *virtual_memory = NULL;
-    exec_stream_t *streams = NULL;
     bool loop = true;
-    global_data_t global_data = {champions_nbr, {0}, {0}};
+    global_data_t global_data = {champions_nbr, {0}, NULL, 0};
 
-    if (init_memory(champions_nbr, filenames, &virtual_memory, &streams) !=
+    if (init_memory(champions_nbr, filenames, &virtual_memory,
+        &(global_data.streams)) !=
         EPITECH_SUCCESS)
         return EPITECH_FAILURE;
     while (loop) {
-        execute_tick(virtual_memory, streams, &global_data);
+        execute_tick(virtual_memory, &(global_data.streams), &global_data);
     }
 }

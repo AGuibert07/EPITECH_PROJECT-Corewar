@@ -16,11 +16,11 @@ int st_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     if (IS_REG(stream->types[1])) {
         if (!IS_A_REG_ID(stream->args[1]))
             return EPITECH_FAILURE;
-        global_data->registers[stream->args[1] - 1] =
-            global_data->registers[stream->args[0] - 1];
+        stream->registers[stream->args[1] - 1] =
+            stream->registers[stream->args[0] - 1];
     } else
         write_direct(virtual_memory, stream->pos + stream->args[1],
-            global_data->registers[stream->args[0] - 1]);
+            stream->registers[stream->args[0] - 1]);
     return EPITECH_SUCCESS;
 }
 
@@ -35,14 +35,14 @@ int sti_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     if (IS_REG(stream->types[1])) {
         if (!IS_A_REG_ID(val1))
             return EPITECH_FAILURE;
-        val1 = global_data->registers[val1 - 1];
+        val1 = stream->registers[val1 - 1];
     }
     if (IS_REG(stream->types[2])) {
         if (!IS_A_REG_ID(val2))
             return EPITECH_FAILURE;
-        val2 = global_data->registers[val2 - 1];
+        val2 = stream->registers[val2 - 1];
     }
     write_direct(virtual_memory, stream->pos + (val1 + val2) % IDX_MOD,
-        global_data->registers[stream->args[0] - 1]);
+        stream->registers[stream->args[0] - 1]);
     return EPITECH_SUCCESS;
 }

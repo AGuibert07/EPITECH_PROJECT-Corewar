@@ -56,44 +56,56 @@ int or_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data);
 int xor_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data);
-int lld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int zjmp_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data);
 int ldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data);
 int sti_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data);
+int fork_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+    global_data_t *global_data);
+int lld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+    global_data_t *global_data);
 int lldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data);
+int lfork_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+    global_data_t *global_data);
+int print_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+    global_data_t *global_data);
 // op_tab
+static const op_t null_op = {0, 0, {0}, 0, false, -1, 0, 0, 0};
+
 static const op_t op_tab[] = {
-    {"none", 0, {0}, 0, false, 1, "Nothing", 0},//
-    {"live", 1, {T_DIR}, 1, false, 10, "alive", &live_instruction},//
-    {"ld", 2, {T_DIR | T_IND, T_REG}, 2, true, 5, "load", &ld_instruction},//
-    {"st", 2, {T_REG, T_REG | T_IND}, 3, true, 5, "store", &st_instruction},//
+    {"none", 0, {0}, 0, false, 1, "Nothing", 0},
+    {"live", 1, {T_DIR}, 1, false, 10, "alive", &live_instruction},
+    {"ld", 2, {T_DIR | T_IND, T_REG}, 2, true, 5, "load", &ld_instruction},
+    {"st", 2, {T_REG, T_REG | T_IND}, 3, true, 5, "store", &st_instruction},
     {"add", 3, {T_REG, T_REG, T_REG}, 4, true, 10, "addition",
-        &add_instruction},//
+        &add_instruction},
     {"sub", 3, {T_REG, T_REG, T_REG}, 5, true, 10, "subtraction",
-        &sub_instruction},//
+        &sub_instruction},
     {"and", 3, {T_ALL, T_ALL, T_REG}, 6, true, 6,
-        "binary and (and  r1, r2, r3   r1&r2 -> r3", &and_instruction},//
+        "binary and (and  r1, r2, r3   r1&r2 -> r3", &and_instruction},
     {"or", 3, {T_ALL, T_ALL, T_REG}, 7, true, 6,
-        "binary or  (or   r1, r2, r3   r1 | r2 -> r3", &or_instruction},//
+        "binary or  (or   r1, r2, r3   r1 | r2 -> r3", &or_instruction},
     {"xor", 3, {T_ALL, T_ALL, T_REG}, 8, true, 6,
-        "binary exclusive or (xor  r1, r2, r3   r1^r2 -> r3", &xor_instruction},//
-    {"zjmp", 1, {T_DIR | T_INDEX}, 9, false, 20, "jump if zero"},
+        "binary exclusive or (xor  r1, r2, r3   r1^r2 -> r3", &xor_instruction},
+    {"zjmp", 1, {T_DIR | T_INDEX}, 9, false, 20, "jump if zero",
+        &zjmp_instruction},
     {"ldi", 3, {T_ALL | T_INDEX, T_REG | T_DIR, T_REG | T_INDEX}, 10, true, 25,
-        "load indirect", &ldi_instruction},//
+        "load indirect", &ldi_instruction},
     {"sti", 3, {T_REG, T_ALL | T_INDEX,
         T_REG | T_DIR | T_INDEX}, 11, true, 25, "store indirect",
-        &sti_instruction},//
-    {"fork", 1, {T_DIR | T_INDEX}, 12, false, 800, "fork"},
+        &sti_instruction},
+    {"fork", 1, {T_DIR | T_INDEX}, 12, false, 800, "fork", &fork_instruction},
     {"lld", 2, {T_DIR | T_IND, T_REG}, 13, true, 10, "long load",
-        &lld_instruction},//
+        &lld_instruction},
     {"lldi", 3, {T_ALL | T_INDEX, T_REG | T_DIR | T_INDEX, T_REG}, 14, true, 50,
-        "long load indirect", &lldi_instruction},//
-    {"lfork", 1, {T_DIR | T_INDEX}, 15, false, 1000, "long fork"},
-    {"print", 1, {T_REG}, 16, true, 2, "print character"},
-    {0, 0, {0}, 0, false, -1, 0, 0}
+        "long load indirect", &lldi_instruction},
+    {"lfork", 1, {T_DIR | T_INDEX}, 15, false, 1000, "long fork",
+        &lfork_instruction},
+    {"print", 1, {T_REG}, 16, true, 2, "print character", &print_instruction},
+    null_op
 };
 
 /*
