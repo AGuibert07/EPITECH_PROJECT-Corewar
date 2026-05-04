@@ -5,6 +5,7 @@
 ** main file of the project
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <byteswap.h>
 #include "mem.h"
@@ -33,8 +34,8 @@ static int read_header(exec_stream_t *stream, FILE *file)
     return EPITECH_SUCCESS;
 }
 
-static exec_stream_t load_the_champion(byte_t *virtual_memory, const char *filename,
-    size_t alloc_size, size_t pos)
+static exec_stream_t load_the_champion(byte_t *virtual_memory,
+    const char *filename, int alloc_size, size_t pos)
 {
     exec_stream_t stream = null_stream;
     FILE *file = fopen(filename, "rb");
@@ -64,8 +65,9 @@ static exec_stream_t *load_champions_in_virt_mem(byte_t *virtual_memory,
     size_t alloc_size = MEM_SIZE / champions_nbr;
     exec_stream_t *streams = my_calloc(sizeof(exec_stream_t) *
         (champions_nbr + 1));
+
     streams[champions_nbr].pos = -1;
-    for (size_t i = 0; i < champions_nbr; ++i) {
+    for (int i = 0; i < champions_nbr; ++i) {
         streams[i] = load_the_champion(virtual_memory, filenames[i], alloc_size,
             alloc_size * i);
         if (streams[i].pos < 0) {

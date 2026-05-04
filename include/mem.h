@@ -16,10 +16,13 @@
     #define MAX_CHAMPIONS_NBR 4
     #define _2_POW_8 256
 
-int init_memory(int champions_nbr, const char **file_names,
-    byte_t **virtual_memory_ptr, exec_stream_t **streams_ptr);
+    #define HIDE_UNUSED_PTR(ptr) (ptr = &(ptr[0]))
+
+int corewar(int champions_nbr, const char **filenames);
 
 // memory tools
+int init_memory(int champions_nbr, const char **file_names,
+    byte_t **virtual_memory_ptr, exec_stream_t **streams_ptr);
 int read_byte(byte_t *virtual_memory, size_t position);
 int read_indirect_or_index(byte_t *virtual_memory, size_t position);
 int read_direct(byte_t *virtual_memory, size_t position);

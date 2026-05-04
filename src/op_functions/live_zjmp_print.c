@@ -11,6 +11,7 @@
 int live_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data)
 {
+    HIDE_UNUSED_PTR(virtual_memory);
     global_data->lives[stream->champion_id - 1] = 0;
     return EPITECH_SUCCESS;
 }
@@ -18,6 +19,8 @@ int live_instruction(byte_t *virtual_memory, exec_stream_t *stream,
 int zjmp_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data)
 {
+    HIDE_UNUSED_PTR(virtual_memory);
+    HIDE_UNUSED_PTR(global_data);
     if (stream->args[0] > 0)
         stream->curent_byte = stream->args[0];
     return EPITECH_SUCCESS;
@@ -26,6 +29,8 @@ int zjmp_instruction(byte_t *virtual_memory, exec_stream_t *stream,
 int print_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data)
 {
+    HIDE_UNUSED_PTR(virtual_memory);
+    HIDE_UNUSED_PTR(global_data);
     if (!IS_A_REG_ID(stream->args[0]))
         return EPITECH_FAILURE;
     my_putchar(stream->registers[stream->args[0] - 1] % _2_POW_8);

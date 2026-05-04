@@ -23,9 +23,18 @@ VALGRIND_FLAGS	=	--leak-check=full --show-leak-kinds=all
 
 
 
-SRC			=	# src files
+SRC			=	src/corewar.c							\
+				src/memory_tools/memory_init.c			\
+				src/memory_tools/memory_read.c			\
+				src/memory_tools/memory_tools.c			\
+				src/memory_tools/memory_write.c			\
+				src/op_functions/live_zjmp_print.c		\
+				src/op_functions/st_sti.c				\
+				src/op_functions/ld_lld_ldi_lldi.c		\
+				src/op_functions/operators.c			\
+				src/op_functions/fork_lfork.c
 
-MAIN_SRC	=	src/main.c # main file
+MAIN_SRC	=	src/main.c
 
 TESTS_SRC	=	# unit tests src files
 
@@ -35,7 +44,7 @@ MAIN_OBJ	=	$(MAIN_SRC:.c=.o)
 TESTS_OBJ	=	$(TESTS_SRC:.c=.o)
 
 
-DELIVERY_NAME	=	delivery # delivery binary name
+DELIVERY_NAME	=	corewar
 TESTS_NAME		=	unit_tests
 
 

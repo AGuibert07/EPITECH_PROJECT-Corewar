@@ -1,0 +1,4 @@
+*.o
+*.a
+given_files/
+corewar

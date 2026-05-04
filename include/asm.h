@@ -57,6 +57,8 @@ typedef struct op_s {
     op_function_t op_function;
 } op_t;
 
+static const op_t null_op = {NULL, 0, {0}, 0, false, -1, NULL, NULL};
+
 struct exec_stream_s {
     byte_t champion_id;
     char prog_name[PROG_NAME_LENGTH + 1];
@@ -72,8 +74,8 @@ struct exec_stream_s {
     bool running;
 } typedef exec_stream_t;
 
-static const exec_stream_t null_stream = {0, {0}, {0}, 0, {0}, -1, -1, 0,
-    {0, 0, {0}, 0, false, 0, 0, {0}, {0}, 0}, true};
+static const exec_stream_t null_stream = {0, {0}, {0}, 0, {0}, -1, 0, -1,
+    null_op, {0}, {0}, true};
 
 struct global_data_s {
     size_t alive_champions_nbr;

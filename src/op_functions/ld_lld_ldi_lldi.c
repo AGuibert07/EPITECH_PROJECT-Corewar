@@ -11,12 +11,13 @@
 int ld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data)
 {
+    HIDE_UNUSED_PTR(global_data);
     if (!IS_A_REG_ID(stream->args[1]))
         return EPITECH_FAILURE;
     if (IS_INDIR(stream->types[0]))
         stream->registers[stream->args[1] - 1] =
             read_direct(virtual_memory, stream->pos + stream->args[0] %
-                IDX_MOD);
+            IDX_MOD);
     else
         stream->registers[stream->args[1] - 1] = stream->args[0];
     return EPITECH_SUCCESS;
@@ -25,6 +26,7 @@ int ld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
 int lld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data)
 {
+    HIDE_UNUSED_PTR(global_data);
     if (!IS_A_REG_ID(stream->args[1]))
         return EPITECH_FAILURE;
     if (IS_INDIR(stream->types[0]))
@@ -41,6 +43,7 @@ int ldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     int val1 = stream->args[0];
     int val2 = stream->args[1];
 
+    HIDE_UNUSED_PTR(global_data);
     if (!IS_A_REG_ID(stream->args[2]))
         return EPITECH_FAILURE;
     if (IS_REG(stream->types[0])) {
@@ -64,6 +67,7 @@ int lldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     int val1 = stream->args[0];
     int val2 = stream->args[1];
 
+    HIDE_UNUSED_PTR(global_data);
     if (!IS_A_REG_ID(stream->args[2]))
         return EPITECH_FAILURE;
     if (IS_REG(stream->types[0])) {

@@ -25,13 +25,13 @@ static void get_args_types(byte_t *virtual_memory, exec_stream_t *stream,
     args_type_t types[4])
 {
     if (stream->instruction.coding_byte) {
-        for (size_t i = 0; i < stream->instruction.nbr_args; ++i)
+        for (int i = 0; i < stream->instruction.nbr_args; ++i)
             types[i] = ((virtual_memory[stream->pos + stream->curent_byte] >>
-                (MAX_ARGS_NUMBER - 1 - i) * 2) % MAX_ARGS_NUMBER) |
+                    (MAX_ARGS_NUMBER - 1 - i) * 2) % MAX_ARGS_NUMBER) |
                 (stream->instruction.type[i] & T_INDEX);
         stream->curent_byte += 1;
     } else
-        for (size_t i = 0; i < stream->instruction.nbr_args; ++i)
+        for (int i = 0; i < stream->instruction.nbr_args; ++i)
             types[i] = stream->instruction.type[i];
 }
 
@@ -40,7 +40,7 @@ static int get_argument(byte_t *virtual_memory, exec_stream_t *stream,
 {
     int arg = 0;
 
-    for (size_t i = 0; i < stream->instruction.nbr_args; ++i) {
+    for (int i = 0; i < stream->instruction.nbr_args; ++i) {
         if (IS_REG(type)) {
             arg = read_byte(virtual_memory, stream->pos + stream->curent_byte);
             stream->curent_byte += T_REG;
@@ -60,34 +60,38 @@ static int get_argument(byte_t *virtual_memory, exec_stream_t *stream,
     return 0;
 }
 
-int execute_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int execute_instruction(byte_t *virtual_memory, size_t stream_index,
     global_data_t *global_data)
 {
+    exec_stream_t *stream = &(global_data->streams[stream_index]);
+
     get_args_types(virtual_memory, stream, stream->types);
-    for (size_t i = 0; i < stream->instruction.nbr_args; ++i)
+    for (int i = 0; i < stream->instruction.nbr_args; ++i)
         stream->args[i] = get_argument(virtual_memory, stream,
             stream->types[i]);
     return stream->instruction.op_function(virtual_memory, stream, global_data);
 }
 
-int execute_tick(byte_t *virtual_memory, exec_stream_t *streams,
-    global_data_t *global_data)
+void execute_tick(byte_t *virtual_memory, global_data_t *global_data)
 {
     for (size_t i = 0; i < global_data->alive_champions_nbr; ++i)
         global_data->lives[i] += 1;
-    for (size_t i = 0; streams[i].pos >= 0; ++i) {
-        if (streams[i].inst_time <= 0) {
-            streams[i].instruction =
-                get_op_by_code(virtual_memory[streams[i].pos % MEM_SIZE]);
-            streams[i].curent_byte = 1;
-            streams[i].inst_time = streams[i].instruction.nbr_cycles - 1;
-            streams[i].pos += ((streams[i].inst_time < 0) ? (1) : (0));
-        } else if (streams[i].inst_time > 1)
-            streams[i].inst_time -= 1;
-        if (streams[i].inst_time == 1) {
-            execute_instruction(virtual_memory, &(streams[i]), global_data);
-            streams[i].pos += streams[i].curent_byte;
-            streams[i].curent_byte = 0;
+    for (size_t i = 0; global_data->streams[i].pos >= 0; ++i) {
+        if (global_data->streams[i].inst_time > 1)
+            global_data->streams[i].inst_time -= 1;
+        if (global_data->streams[i].inst_time <= 0) {
+            global_data->streams[i].instruction = get_op_by_code(
+                virtual_memory[global_data->streams[i].pos % MEM_SIZE]);
+            global_data->streams[i].curent_byte = 1;
+            global_data->streams[i].inst_time =
+                global_data->streams[i].instruction.nbr_cycles - 1;
+            global_data->streams[i].pos +=
+                ((global_data->streams[i].inst_time < 0) ? (1) : (0));
+        }
+        if (global_data->streams[i].inst_time == 1) {
+            execute_instruction(virtual_memory, i, global_data);
+            global_data->streams[i].pos += global_data->streams[i].curent_byte;
+            global_data->streams[i].curent_byte = 0;
         }
     }
 }
@@ -99,10 +103,11 @@ int corewar(int champions_nbr, const char **filenames)
     global_data_t global_data = {champions_nbr, {0}, NULL, 0};
 
     if (init_memory(champions_nbr, filenames, &virtual_memory,
-        &(global_data.streams)) !=
+            &(global_data.streams)) !=
         EPITECH_SUCCESS)
         return EPITECH_FAILURE;
     while (loop) {
-        execute_tick(virtual_memory, &(global_data.streams), &global_data);
+        execute_tick(virtual_memory, &global_data);
     }
+    return EPITECH_SUCCESS;
 }

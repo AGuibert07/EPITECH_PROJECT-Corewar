@@ -11,6 +11,7 @@
 int st_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data)
 {
+    HIDE_UNUSED_PTR(global_data);
     if (!IS_A_REG_ID(stream->args[0]))
         return EPITECH_FAILURE;
     if (IS_REG(stream->types[1])) {
@@ -30,6 +31,7 @@ int sti_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     int val1 = stream->args[1];
     int val2 = stream->args[2];
 
+    HIDE_UNUSED_PTR(global_data);
     if (!IS_A_REG_ID(stream->args[0]))
         return EPITECH_FAILURE;
     if (IS_REG(stream->types[1])) {

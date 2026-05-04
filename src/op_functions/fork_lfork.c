@@ -25,6 +25,7 @@ static void set_new_stream(exec_stream_t *new_stream, int pos)
 int fork_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data)
 {
+    HIDE_UNUSED_PTR(virtual_memory);
     global_data->streams = realloc(global_data->streams,
         sizeof(exec_stream_t) * (global_data->progs_nbr + 2));
     if (global_data->streams == NULL)
@@ -39,6 +40,7 @@ int fork_instruction(byte_t *virtual_memory, exec_stream_t *stream,
 int lfork_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     global_data_t *global_data)
 {
+    HIDE_UNUSED_PTR(virtual_memory);
     global_data->streams = realloc(global_data->streams,
         sizeof(exec_stream_t) * (global_data->progs_nbr + 2));
     if (global_data->streams == NULL)

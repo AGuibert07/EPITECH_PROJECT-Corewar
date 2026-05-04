@@ -19,4 +19,5 @@ int main(int ac, const char **av)
         my_put_nbr_error(MAX_CHAMPIONS_NBR);
         my_putstr_error(" champions.\n");
     }
+    return corewar(ac - 1, av);
 }
