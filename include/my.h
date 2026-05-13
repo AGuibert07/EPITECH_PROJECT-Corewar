@@ -37,7 +37,7 @@ int my_index_of_str(char c, char *str);
 int my_index_of_word_array(char *str, char **arr);
 char *my_int_to_str_function(long long int nbr, const char *base);
 bool my_is_in_str(char c, char *str);
-bool my_is_in_word_array(char *str, char **arr);
+bool my_is_in_word_array(const char *str, const char **arr);
 int my_nbr_occurences_in_str(char c, char *str);
 void my_putchar(char c);
 void my_putchar_error(char c);

@@ -15,14 +15,32 @@
     #define MIN_CHAMPIONS_NBR 2
     #define MAX_CHAMPIONS_NBR 4
     #define _2_POW_8 256
+    #define PADDING_SIZE 3
 
     #define HIDE_UNUSED_PTR(ptr) (ptr = &(ptr[0]))
 
 int corewar(int champions_nbr, const char **filenames);
 
+// parsing
+void set_champions_id(champion_t *champions, size_t ch_nbr);
+void set_champions_load_address(champion_t *champions, size_t ch_nbr);
+champion_t *parse_arguments(const int ac, const char **av, size_t *ch_nbr,
+    long *dump_value);
+
+// dump
+void dump_vm(byte_t *virtual_memory, global_data_t *global_data);
+
+// execution
+// void execute_tick(byte_t *virtual_memory, global_data_t *global_data);
+int execute_instruction(byte_t *virtual_memory, size_t stream_index,
+    global_data_t *global_data);
+void execute_tick(byte_t *virtual_memory, global_data_t *global_data);
+
 // memory tools
-int init_memory(int champions_nbr, const char **file_names,
-    byte_t **virtual_memory_ptr, exec_stream_t **streams_ptr);
+int print_error(const char *prefix, const char *msg);
+// int init_memory(int champions_nbr, const char **file_names,
+//     byte_t **virtual_memory_ptr, prog_stream_t **streams_ptr);
+byte_t *init_memory(const int ac, const char **av, global_data_t *global_data);
 int read_byte(byte_t *virtual_memory, size_t position);
 int read_indirect_or_index(byte_t *virtual_memory, size_t position);
 int read_direct(byte_t *virtual_memory, size_t position);

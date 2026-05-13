@@ -10,7 +10,7 @@ CC	:=	epiclang
 CPPFLAGS	+=	-iquote ./include/
 CFLAGS		+=	-Wall -Wextra
 LDFLAGS		+=	-L lib
-LDLIBS		+=	-l my
+LDLIBS		+=	-l my -l ncurses
 
 
 TESTS_FOLDER	=	tests/
@@ -23,16 +23,22 @@ VALGRIND_FLAGS	=	--leak-check=full --show-leak-kinds=all
 
 
 
-SRC			=	src/corewar.c							\
-				src/memory_tools/memory_init.c			\
-				src/memory_tools/memory_read.c			\
-				src/memory_tools/memory_tools.c			\
-				src/memory_tools/memory_write.c			\
-				src/op_functions/live_zjmp_print.c		\
-				src/op_functions/st_sti.c				\
-				src/op_functions/ld_lld_ldi_lldi.c		\
-				src/op_functions/operators.c			\
-				src/op_functions/fork_lfork.c
+SRC			= 	$(addprefix src/, memory_init.c		\
+					corewar.c						\
+					dump.c							\
+					parse_params.c					\
+					set_ch_id_and_load_add.c		\
+					$(addprefix execution/, execute_instruction.c		\
+						execute_tick.c)									\
+					$(addprefix memory_tools/,		\
+						memory_read.c				\
+						memory_tools.c				\
+						memory_write.c)				\
+					$(addprefix op_functions/, live_zjmp_print.c		\
+						st_sti.c										\
+						ld_lld_ldi_lldi.c								\
+						operators.c										\
+						fork_lfork.c))
 
 MAIN_SRC	=	src/main.c
 

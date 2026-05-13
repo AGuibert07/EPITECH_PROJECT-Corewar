@@ -28,6 +28,7 @@
 
     // args types
 enum args_type_e {
+    T_NONE = 0,     // none type
     T_REG = 1,      // register
     T_DIR = 4,      // direct  (ld  #1,r1  put 1 into r1)
     T_IND = 2,      /* indirect always relative (ld 1,r1 put what's in the
@@ -59,29 +60,63 @@ typedef struct op_s {
 
 static const op_t null_op = {NULL, 0, {0}, 0, false, -1, NULL, NULL};
 
-struct exec_stream_s {
-    byte_t champion_id;
+struct champion_s {
+    size_t champion_id;
+    char *filename;
     char prog_name[PROG_NAME_LENGTH + 1];
     char comment[COMMENT_LENGTH + 1];
-    int prog_size;
+    size_t prog_size;
+    size_t live;
+    bool alive;
+    int load_address;
+    size_t time_death;
+} typedef champion_t;
+
+static const champion_t null_champion = {0, NULL, {0}, {0}, 0, 0, false, -1, 0};
+
+struct prog_stream_s {
+    champion_t *champion_data;
     int registers[REG_NUMBER];
-    int pos;
-    int curent_byte;
-    int inst_time;
-    op_t instruction;
+    size_t pos;
+    size_t curent_byte;
+    size_t nbr_cycles;
+    op_t op;
     args_type_t types[MAX_ARGS_NUMBER + 1];
     int args[MAX_ARGS_NUMBER + 1];
     bool running;
-} typedef exec_stream_t;
+    int carry;
+} typedef prog_stream_t;
 
-static const exec_stream_t null_stream = {0, {0}, {0}, 0, {0}, -1, 0, -1,
-    null_op, {0}, {0}, true};
+static const prog_stream_t null_stream =
+    {NULL, {0}, 0, 0, 0, null_op, {T_NONE}, {0}, true, 0};
+
+// struct exec_stream_s {
+//     byte_t champion_id;
+//     char prog_name[PROG_NAME_LENGTH + 1];
+//     char comment[COMMENT_LENGTH + 1];
+//     int prog_size;
+//     int registers[REG_NUMBER];
+//     int pos;
+//     int curent_byte;
+//     int inst_time;
+//     op_t instruction;
+//     args_type_t types[MAX_ARGS_NUMBER + 1];
+//     int args[MAX_ARGS_NUMBER + 1];
+//     bool running;
+// } typedef exec_stream_t;
+
+// static const exec_stream_t null_stream = {0, {0}, {0}, 0, {0}, -1, 0, -1,
+//     null_op, {0}, {0}, true};
 
 struct global_data_s {
+    size_t champions_nbr;
     size_t alive_champions_nbr;
     size_t lives[MAX_ARGS_NUMBER];
-    exec_stream_t *streams;
+    champion_t *champions;
+    prog_stream_t *streams;
     size_t progs_nbr;
+    long int dump_val;
+    size_t cycles;
 } typedef global_data_t;
 
 struct instruction_s {

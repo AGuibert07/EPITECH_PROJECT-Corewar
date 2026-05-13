@@ -40,37 +40,37 @@
     // #define SIZE_OF_TYPE(t) (((t & T_INDEX) == 0) ? (t & T_ALL) : (IND_SIZE))
 
 // instruction functions
-int live_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int live_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int ld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int ld_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int st_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int st_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int add_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int add_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int sub_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int sub_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int and_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int and_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int or_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int or_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int xor_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int xor_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int zjmp_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int zjmp_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int ldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int ldi_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int sti_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int sti_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int fork_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int fork_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int lld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int lld_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int lldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int lldi_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int lfork_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int lfork_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
-int print_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int print_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data);
 // op_tab
 static const op_t op_tab[] = {
@@ -113,22 +113,7 @@ static const op_t op_tab[] = {
     null_op
 };
 
-/*
-** header
-*/
-
-typedef struct header_s {
-    int magic;
-    char prog_name[PROG_NAME_LENGTH + 1];
-    char padding[3];
-    int prog_size;
-    char comment[COMMENT_LENGTH + 1];
-    char padding2[3];
-} header_t;
-
-/*
-** live
-*/
+    // live
     #define CYCLE_TO_DIE 1536 /* number of cycle before beig declared dead */
     #define CYCLE_DELTA 5
     #define NBR_LIVE 40

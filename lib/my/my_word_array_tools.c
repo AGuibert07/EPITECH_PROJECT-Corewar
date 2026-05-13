@@ -44,9 +44,9 @@ char **my_word_array_concat(char **arr1, char **arr2)
     return arr;
 }
 
-bool my_is_in_word_array(char *str, char **arr)
+bool my_is_in_word_array(const char *str, const char **arr)
 {
-    for (int i = 0; i < my_word_array_len((const char **)(arr)); ++i) {
+    for (int i = 0; i < my_word_array_len(arr); ++i) {
         if (my_strcmp(str, arr[i]) == 0)
             return true;
     }
