@@ -19,6 +19,9 @@
 
     #define HIDE_UNUSED_PTR(ptr) (ptr = &(ptr[0]))
 
+    // dump
+    #define NBR_COLUMNS 32
+
 int corewar(int champions_nbr, const char **filenames);
 
 // parsing

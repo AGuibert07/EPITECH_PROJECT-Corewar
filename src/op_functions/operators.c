@@ -8,7 +8,7 @@
 #include "mem.h"
 #include "my.h"
 
-int add_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int add_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     HIDE_UNUSED_PTR(virtual_memory);
@@ -22,7 +22,7 @@ int add_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int sub_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int sub_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     HIDE_UNUSED_PTR(virtual_memory);
@@ -36,7 +36,7 @@ int sub_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int and_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int and_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     int vals[2] = {stream->args[0], stream->args[1]};
@@ -61,7 +61,7 @@ int and_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int or_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int or_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     int vals[2] = {stream->args[0], stream->args[1]};
@@ -86,7 +86,7 @@ int or_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int xor_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int xor_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     int vals[2] = {stream->args[0], stream->args[1]};

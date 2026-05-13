@@ -8,7 +8,7 @@
 #include "mem.h"
 #include "my.h"
 
-int st_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int st_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     HIDE_UNUSED_PTR(global_data);
@@ -25,7 +25,7 @@ int st_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int sti_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int sti_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     int val1 = stream->args[1];

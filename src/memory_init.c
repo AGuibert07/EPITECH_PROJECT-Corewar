@@ -29,7 +29,7 @@ static bool read_padding(FILE *file)
     return (fread(padding, sizeof(char), PADDING_SIZE, file) == PADDING_SIZE);
 }
 
-static bool read_int(FILE *file, int *ptr)
+static bool read_int(FILE *file, size_t *ptr)
 {
     if (fread(ptr, sizeof(int), 1, file) != 1)
         return false;
@@ -44,18 +44,20 @@ static bool read_str(FILE *file, char *ptr, size_t size)
 
 static int read_header(champion_t *champion, FILE *file)
 {
-    int tmp = 0;
+    bool valid = true;
+    size_t magic = 0;
 
-    if (!read_int(file, &tmp))
+    if (!read_int(file, &magic))
         return EPITECH_FAILURE;
-    if (tmp != COREWAR_EXEC_MAGIC)
+    if (magic != COREWAR_EXEC_MAGIC)
         return print_error(champion->filename,
             "Invalid champion binary file (invalid magic).");
-    if (!read_str(file, champion->prog_name, PROG_NAME_LENGTH) ||
-        !read_padding(file) || !read_int(file, &tmp))
+    valid = read_str(file, champion->prog_name, PROG_NAME_LENGTH + 1);
+    valid &= read_padding(file);
+    valid &= read_int(file, &(champion->prog_size));
+    if (!valid)
         return EPITECH_FAILURE;
-    champion->prog_size = tmp;
-    if (!read_str(file, champion->comment, COMMENT_LENGTH) ||
+    if (!read_str(file, champion->comment, COMMENT_LENGTH + 1) ||
         !read_padding(file))
         return EPITECH_FAILURE;
     return EPITECH_SUCCESS;
@@ -102,6 +104,8 @@ static int load_champions_in_virt_mem(byte_t *virtual_memory,
         if (load_the_champion(virtual_memory, &(global_data->champions[i]),
                 &(global_data->streams[i]), alloc_size) != EPITECH_SUCCESS)
             return EPITECH_FAILURE;
+        global_data->streams[i].champion_data = &(global_data->champions[i]);
+        global_data->streams[i].pos = global_data->champions[i].load_address;
     }
     return EPITECH_SUCCESS;
 }

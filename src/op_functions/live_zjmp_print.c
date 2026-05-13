@@ -8,15 +8,25 @@
 #include "mem.h"
 #include "my.h"
 
-int live_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int live_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
+    int tmp = 0;
+
     HIDE_UNUSED_PTR(virtual_memory);
-    global_data->lives[stream->champion_id - 1] = 0;
+    for (size_t i = 0; global_data->champions[i].filename != NULL; ++i) {
+        tmp = global_data->champions[i].champion_id;
+        if (tmp == stream->args[0]) {
+            global_data->champions[i].live = 0;
+            my_putstr("live: ");
+            my_putstr((const char *)(global_data->champions[i].prog_name));
+            my_putchar('\n');
+        }
+    }
     return EPITECH_SUCCESS;
 }
 
-int zjmp_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int zjmp_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     HIDE_UNUSED_PTR(virtual_memory);
@@ -26,7 +36,7 @@ int zjmp_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int print_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int print_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     HIDE_UNUSED_PTR(virtual_memory);

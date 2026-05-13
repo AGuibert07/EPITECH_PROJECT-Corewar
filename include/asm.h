@@ -43,7 +43,7 @@ enum args_type_e {
     #define IS_INDIR(t) ((t & T_IND) == T_IND)
     #define IS_INDEX(t) ((t & T_INDEX) == T_INDEX)
 
-typedef char byte_t;
+typedef unsigned char byte_t;
 
 typedef int (*op_function_t)(byte_t *, void *, void *);
 

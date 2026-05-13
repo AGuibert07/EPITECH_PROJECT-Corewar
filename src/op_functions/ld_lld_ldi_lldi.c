@@ -8,7 +8,7 @@
 #include "mem.h"
 #include "my.h"
 
-int ld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int ld_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     HIDE_UNUSED_PTR(global_data);
@@ -23,7 +23,7 @@ int ld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int lld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int lld_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     HIDE_UNUSED_PTR(global_data);
@@ -37,7 +37,7 @@ int lld_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int ldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int ldi_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     int val1 = stream->args[0];
@@ -61,7 +61,7 @@ int ldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
     return EPITECH_SUCCESS;
 }
 
-int lldi_instruction(byte_t *virtual_memory, exec_stream_t *stream,
+int lldi_instruction(byte_t *virtual_memory, prog_stream_t *stream,
     global_data_t *global_data)
 {
     int val1 = stream->args[0];

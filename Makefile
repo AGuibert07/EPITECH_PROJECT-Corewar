@@ -24,8 +24,6 @@ VALGRIND_FLAGS	=	--leak-check=full --show-leak-kinds=all
 
 
 SRC			= 	$(addprefix src/, memory_init.c		\
-					corewar.c						\
-					dump.c							\
 					parse_params.c					\
 					set_ch_id_and_load_add.c		\
 					$(addprefix execution/, execute_instruction.c		\
@@ -40,14 +38,20 @@ SRC			= 	$(addprefix src/, memory_init.c		\
 						operators.c										\
 						fork_lfork.c))
 
+NOT_BONUS_SRC	=	$(addprefix src/, dump.c corewar.c)
+
+BONUS_SRC		=	$(addprefix bonus/, dump_ncurses.c corewar_ncurses.c)
+
 MAIN_SRC	=	src/main.c
 
 TESTS_SRC	=	# unit tests src files
 
 
-OBJ			=	$(SRC:.c=.o)
-MAIN_OBJ	=	$(MAIN_SRC:.c=.o)
-TESTS_OBJ	=	$(TESTS_SRC:.c=.o)
+OBJ				=	$(SRC:.c=.o)
+NOT_BONUS_OBJ	=	$(NOT_BONUS_SRC:.c=.o)
+BONUS_OBJ		=	$(BONUS_SRC:.c=.o)
+MAIN_OBJ		=	$(MAIN_SRC:.c=.o)
+TESTS_OBJ		=	$(TESTS_SRC:.c=.o)
 
 
 DELIVERY_NAME	=	corewar
@@ -55,9 +59,9 @@ TESTS_NAME		=	unit_tests
 
 
 
-all: $(OBJ) $(MAIN_OBJ)
+all: $(OBJ) $(NOT_BONUS_OBJ) $(MAIN_OBJ)
 	$(MAKE) -C lib/my/
-	$(CC) -o $(DELIVERY_NAME) $(OBJ) $(MAIN_OBJ) $(LDFLAGS) $(LDLIBS)
+	$(CC) -o $(DELIVERY_NAME) $(OBJ) $(NOT_BONUS_OBJ) $(MAIN_OBJ) $(LDFLAGS) $(LDLIBS)
 
 
 
@@ -72,6 +76,15 @@ fclean: clean
 	$(RM) -f *.gc*
 
 re: fclean all
+
+
+
+bonus: LDLIBS += -l ncurses
+bonus: $(OBJ) $(BONUS_OBJ) $(MAIN_OBJ)
+	$(MAKE) -C lib/my/
+	$(CC) -o $(DELIVERY_NAME) $(OBJ) $(BONUS_OBJ) $(MAIN_OBJ) $(LDFLAGS) $(LDLIBS)
+
+bonus_re: fclean bonus
 
 
 
@@ -121,4 +134,4 @@ debug: clean dlibmy re
 
 
 
-.PHONY: all clean fclean re runmain tests_clean unit_tests tests_run cover tests_all glibmy vlibmy dlibmy gdebug vdebug debug
+.PHONY: all clean fclean re bonus bonus_re runmain tests_clean unit_tests tests_run cover tests_all glibmy vlibmy dlibmy gdebug vdebug debug
