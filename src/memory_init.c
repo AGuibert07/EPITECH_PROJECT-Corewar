@@ -31,7 +31,7 @@ static bool read_padding(FILE *file)
 
 static bool read_int(FILE *file, int *ptr)
 {
-    if (fread(ptr, sizeof(int), 1, file) == 1)
+    if (fread(ptr, sizeof(int), 1, file) != 1)
         return false;
     *ptr = __bswap_32(*ptr);
     return true;
