@@ -22,12 +22,27 @@
     // dump
     #define NBR_COLUMNS 32
 
+    // flags
+    #define PROG_NBR_FLAG "-n"
+    #define LOAD_ADD_FLAG "-a"
+
+    // ncurses colors id
+enum ncolor_e {
+    STREAM = 5, // red
+    PROG = 2, // blue
+    READ = 3, // yellow
+    START = 4, // green
+    DEFAULT = 1 // white
+} typedef ncolor_t;
+
+    #define DELAY 1
+
 int corewar(int champions_nbr, const char **filenames);
 
 // parsing
 void set_champions_id(champion_t *champions, size_t ch_nbr);
 void set_champions_load_address(champion_t *champions, size_t ch_nbr);
-champion_t *parse_arguments(const int ac, const char **av, size_t *ch_nbr,
+champion_t *parse_arguments(const size_t ac, const char **av, size_t *ch_nbr,
     long *dump_value);
 
 // dump

@@ -53,7 +53,7 @@ int corewar(const int ac, const char **av)
     if (global_data.dump_val == 0)
         dump_vm(virtual_memory, &global_data);
     while (global_data.alive_champions_nbr > 1 || (global_data.cycles <= tdump
-            && tdump > 0)) {
+            && tdump >= 0)) {
         global_data.cycles += 1;
         execute_tick(virtual_memory, &global_data);
         if (global_data.cycles == tdump) {

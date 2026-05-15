@@ -23,35 +23,35 @@ static int get_champion_arg(champion_t *champion, const int ac,
     const char **av)
 {
     int tmp = 0;
+    bool found = false;
 
     if (ac <= 2)
         return EPITECH_FAILURE;
-    if (my_strcmp(av[1], "-n") == 0) {
-        tmp = get_next_int_arg(ac - 1, av + 1);
-        if (tmp < 0)
-            return EPITECH_FAILURE;
+    tmp = get_next_int_arg(ac - 1, av + 1);
+    if (tmp < 0)
+        return EPITECH_FAILURE;
+    if (my_strcmp(av[0], PROG_NBR_FLAG) == 0) {
         champion->champion_id = tmp;
-    }
-    if (my_strcmp(av[1], "-n") == 0) {
-        tmp = get_next_int_arg(ac - 1, av + 1);
-        if (tmp < 0)
-            return EPITECH_FAILURE;
+        found = true;
+    } else if (my_strcmp(av[0], LOAD_ADD_FLAG) == 0) {
         champion->load_address = ABS(tmp) % MEM_SIZE;
-    } else {
-        print_error(av[0], ": Invalid option.\n");
+        found = true;
+    }
+    if (!found) {
+        print_error(av[0], "Invalid option.");
         return EPITECH_FAILURE;
     }
     return EPITECH_SUCCESS;
 }
 
-static int parse_champion(const int ac, const char **av, champion_t *champion,
-    size_t *pos)
+static int parse_champion(const size_t ac, const char **av,
+    champion_t *champion, size_t *pos)
 {
     size_t i = 0;
 
     if (ac <= 0)
         return EPITECH_FAILURE;
-    while (av[i][0] == '-') {
+    while (i < ac && av[i][0] == '-') {
         if (get_champion_arg(champion, ac - i, av + i) != EPITECH_SUCCESS)
             return EPITECH_FAILURE;
         i += 2;
@@ -71,8 +71,6 @@ static champion_t *get_champions(size_t i, const size_t ac, const char **av,
 {
     champion_t *champions = malloc(sizeof(champion_t));
 
-    if (!champions)
-        return NULL;
     *champions = null_champion;
     while (i < ac) {
         champions = realloc(champions, sizeof(champion_t) * (*ch_nbr + 2));
@@ -109,15 +107,19 @@ static champion_t *check_champions_nbr(champion_t *champions, size_t ch_nbr)
     return champions;
 }
 
-champion_t *parse_arguments(const int ac, const char **av, size_t *ch_nbr,
+champion_t *parse_arguments(const size_t ac, const char **av, size_t *ch_nbr,
     long *dump_value)
 {
     champion_t *champions = NULL;
     size_t i = 1;
 
+    if (ac <= 1)
+        return NULL;
     *dump_value = -1;
     if (strcmp(av[1], "-dump") == 0) {
         i += 1;
+        if (i >= ac)
+            return NULL;
         if (!my_str_isnbr(av[i])) {
             my_putstr_error(av[i]);
             my_putstr_error(": Invalid nbr_cycle value.\n");

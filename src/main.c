@@ -28,14 +28,5 @@ int main(int ac, const char **av)
         print_help();
         return EPITECH_SUCCESS;
     }
-    if ((ac - 1) < MIN_CHAMPIONS_NBR) {
-        my_putstr_error("corewar: Too few champions : must load at least ");
-        my_put_nbr_error(MIN_CHAMPIONS_NBR);
-        my_putstr_error(" champions.\n");
-    } else if ((ac - 1) > MAX_CHAMPIONS_NBR) {
-        my_putstr_error("corewar: Too many champions : must load at most ");
-        my_put_nbr_error(MAX_CHAMPIONS_NBR);
-        my_putstr_error(" champions.\n");
-    }
-    return corewar(ac - 1, av);
+    return corewar(ac, av);
 }
