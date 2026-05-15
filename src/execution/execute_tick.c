@@ -21,48 +21,46 @@ static op_t get_op_by_code(char code)
     return op_tab[i];
 }
 
-static bool is_alive(global_data_t *global_data, size_t champion_id)
+static bool is_dead_and_clear(global_data_t *global_data, champion_t *champion)
 {
-    if (champion_id <= 0 || champion_id > MAX_CHAMPIONS_NBR)
-        return false;
-    for (size_t i = 0; global_data->champions[i].filename != NULL; ++i)
-        if (global_data->champions[i].champion_id == champion_id &&
-            !global_data->champions[i].alive)
-            return false;
-    if (global_data->lives[champion_id - 1] > NBR_LIVE)
-        return false;
-    for (size_t i = 0; global_data->streams[i].champion_data != NULL; ++i)
-        if (global_data->streams[i].champion_data->champion_id == champion_id)
-            return true;
-    return false;
+    size_t n = 0;
+
+    if (!champion->alive)
+        return true;
+    for (size_t i = 0; global_data->streams[i].champion_data; ++i)
+        if (global_data->streams[i].champion_data->champion_id ==
+            champion->champion_id)
+            n += 1;
+    return (n == 0);
 }
 
 void remove_stream(prog_stream_t *stream)
 {
     if (stream[0].pos >= 0)
-        for (size_t i = 1; stream[i].champion_data; ++i)
+        for (size_t i = 0; stream[i].champion_data; ++i)
             stream[i] = stream[i + 1];
 }
 
-static void kill_champion(global_data_t *global_data, size_t champion_id)
+static void kill_champion(global_data_t *global_data, champion_t *champion)
 {
-    for (int i = 0; global_data->champions[i].filename != NULL; ++i)
-        if (global_data->champions[i].champion_id == champion_id)
-            global_data->champions[i].alive = false;
-    for (int i = 0; global_data->streams[i].champion_data != NULL; ++i)
-        if (global_data->streams[i].champion_data->champion_id == champion_id) {
+    my_putstr(champion->prog_name);
+    my_putstr(" is dead\n");
+    for (int i = 0; global_data->streams[i].champion_data; ++i)
+        if (global_data->streams[i].champion_data->champion_id ==
+            champion->champion_id)
             remove_stream(&(global_data->streams[i]));
-            i -= 1;
-        }
+    champion->alive = false;
 }
 
 static void check_live(global_data_t *global_data)
 {
-    for (size_t i = 0; i < global_data->alive_champions_nbr; ++i)
-        if (!is_alive(global_data, i + 1)) {
-            kill_champion(global_data, i + 1);
+    for (size_t i = 0; global_data->champions[i].filename; ++i) {
+        if (!is_dead_and_clear(global_data, &(global_data->champions[i])) &&
+            global_data->champions[i].live > global_data->nbr_lives) {
+            kill_champion(global_data, &(global_data->champions[i]));
             global_data->alive_champions_nbr -= 1;
         }
+    }
 }
 
 static bool get_next_instruction(byte_t *virtual_memory, prog_stream_t *stream)
@@ -84,29 +82,6 @@ static void run_instruction(byte_t *virtual_memory, size_t stream_index,
     stream->curent_byte = 0;
 }
 
-// static void execute_tick(byte_t *virtual_memory, global_data_t *global_data)
-// {
-//     bool found = true;
-//
-//     for (size_t i = 0; i < MAX_CHAMPIONS_NBR; ++i)
-//         global_data->lives[i] += 1;
-//     for (int i = 0; global_data->streams[i].pos >= 0; ++i) {
-//         found = true;
-//         if (global_data->streams[i].nbr_cycles > 1)
-//             global_data->streams[i].nbr_cycles -= 1;
-//         if (global_data->streams[i].nbr_cycles <= 0)
-//             get_next_instruction(virtual_memory, &(global_data->streams[i]));
-//         if (global_data->streams[i].op.code == null_op.code) {
-//             remove_stream(&(global_data->streams[i]));
-//             i -= 1;
-//             found = false;
-//         }
-//         if (found && global_data->streams[i].nbr_cycles == 1)
-//             run_instruction(virtual_memory, i, global_data,
-//                 &(global_data->streams[i]));
-//     }
-// }
-//
 static int apply_tick_on_stream(byte_t *virtual_memory,
     global_data_t *global_data, prog_stream_t *stream, size_t stream_index)
 {
@@ -131,11 +106,14 @@ static int apply_tick_on_stream(byte_t *virtual_memory,
 
 void execute_tick(byte_t *virtual_memory, global_data_t *global_data)
 {
-    global_data->cycles += 1;
-    for (size_t i = 0; global_data->champions[i].filename != NULL; ++i)
+    for (size_t i = 0; global_data->champions[i].filename; ++i)
         global_data->champions[i].live += 1;
-    for (int i = 0; global_data->streams[i].champion_data != NULL; ++i)
+    for (int i = 0; global_data->streams[i].champion_data; ++i)
         i -= apply_tick_on_stream(virtual_memory, global_data,
             &(global_data->streams[i]), i);
     check_live(global_data);
+    if (global_data->cycles > 1 &&
+        global_data->cycles % global_data->nbr_lives == 0 &&
+        global_data->nbr_lives > CYCLE_DELTA)
+        global_data->nbr_lives -= CYCLE_DELTA;
 }

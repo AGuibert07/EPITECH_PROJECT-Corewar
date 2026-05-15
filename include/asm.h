@@ -117,6 +117,7 @@ struct global_data_s {
     size_t progs_nbr;
     long int dump_val;
     size_t cycles;
+    size_t nbr_lives;
 } typedef global_data_t;
 
 struct instruction_s {

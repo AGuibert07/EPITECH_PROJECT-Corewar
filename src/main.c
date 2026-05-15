@@ -22,27 +22,20 @@ void print_help(void)
     my_putstr("The addresses are MEM_SIZE modulo.\n");
 }
 
-int main(void)
+int main(int ac, const char **av)
 {
-    return corewar(5, (const char *[6]){"./corewar", "-dump", "0",
-            "given_files/champions/abel.cor", "given_files/champions/bill.cor",
-            0});
+    if (my_is_in_word_array("-h", av)) {
+        print_help();
+        return EPITECH_SUCCESS;
+    }
+    if ((ac - 1) < MIN_CHAMPIONS_NBR) {
+        my_putstr_error("corewar: Too few champions : must load at least ");
+        my_put_nbr_error(MIN_CHAMPIONS_NBR);
+        my_putstr_error(" champions.\n");
+    } else if ((ac - 1) > MAX_CHAMPIONS_NBR) {
+        my_putstr_error("corewar: Too many champions : must load at most ");
+        my_put_nbr_error(MAX_CHAMPIONS_NBR);
+        my_putstr_error(" champions.\n");
+    }
+    return corewar(ac - 1, av);
 }
-
-// int main(int ac, const char **av)
-// {
-//     if (my_is_in_word_array("-h", av)) {
-//         print_help();
-//         return EPITECH_SUCCESS;
-//     }
-//     if ((ac - 1) < MIN_CHAMPIONS_NBR) {
-//         my_putstr_error("corewar: Too few champions : must load at least ");
-//         my_put_nbr_error(MIN_CHAMPIONS_NBR);
-//         my_putstr_error(" champions.\n");
-//     } else if ((ac - 1) > MAX_CHAMPIONS_NBR) {
-//         my_putstr_error("corewar: Too many champions : must load at most ");
-//         my_put_nbr_error(MAX_CHAMPIONS_NBR);
-//         my_putstr_error(" champions.\n");
-//     }
-//     return corewar(ac - 1, av);
-// }

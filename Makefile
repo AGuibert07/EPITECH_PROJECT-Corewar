@@ -10,7 +10,7 @@ CC	:=	epiclang
 CPPFLAGS	+=	-iquote ./include/
 CFLAGS		+=	-Wall -Wextra
 LDFLAGS		+=	-L lib
-LDLIBS		+=	-l my -l ncurses
+LDLIBS		+=	-l my
 
 
 TESTS_FOLDER	=	tests/

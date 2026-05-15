@@ -20,11 +20,12 @@ static int print_winner(champion_t *champions, size_t cycles)
     printf("Cycle : %i\n", cycles);
     for (size_t i = 0; champions[i].filename != NULL; ++i)
         if (champions[i].alive) {
-            printf("%s is winner.\n", champions[i].prog_name);
+            printf("The player %zu(%s)has won.", champions[i].champion_id,
+                champions[i].prog_name);
             n += 1;
         }
     if (n == 0)
-        printf("Everybody is dead.\n");
+        printf("No player has won.\n");
     if (n > 1)
         return EPITECH_FAILURE;
     return EPITECH_SUCCESS;
@@ -47,7 +48,7 @@ static void update_display(byte_t *virtual_memory, global_data_t *global_data)
 
 int corewar(const int ac, const char **av)
 {
-    global_data_t global_data = {0, 0, {0}, NULL, NULL, 0, -1, 0};
+    global_data_t global_data = {0, 0, {0}, NULL, NULL, 0, -1, 0, CYCLE_TO_DIE};
     byte_t *virtual_memory = init_memory(ac, av, &global_data);
     int r_val = 0;
 
@@ -58,9 +59,11 @@ int corewar(const int ac, const char **av)
     if (global_data.dump_val == 0)
         dump_vm(virtual_memory, &global_data);
     init_ncurses();
-    while (global_data.alive_champions_nbr > 1)
+    while (global_data.alive_champions_nbr > 1 ||
+        global_data.cycles <= global_data.dump_val)
         update_display(virtual_memory, &global_data);
     endwin();
+    global_data.cycles -= 1;
     r_val = print_winner(global_data.champions, global_data.cycles);
     nfree(3, virtual_memory, global_data.champions, global_data.streams);
     return r_val;

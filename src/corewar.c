@@ -20,38 +20,46 @@ static int print_winner(champion_t *champions, size_t cycles)
     my_putchar('\n');
     for (size_t i = 0; champions[i].filename != NULL; ++i)
         if (champions[i].alive) {
+            my_putstr("The player ");
+            my_put_nbr(champions[i].champion_id);
+            my_putchar('(');
             my_putstr((const char *)(champions[i].prog_name));
-            my_putstr(" is winner.\n");
+            my_putstr(")has won.\n");
             n += 1;
         }
     if (n == 0)
-        my_putstr("Everybody is dead.\n");
+        my_putstr("No player has won.\n");
     if (n > 1)
         return EPITECH_FAILURE;
     return EPITECH_SUCCESS;
 }
 
+static int end_game(global_data_t *global_data, byte_t *virtual_memory)
+{
+    int r_val = print_winner(global_data->champions, global_data->cycles - 1);
+
+    nfree(3, virtual_memory, global_data->champions, global_data->streams);
+    return r_val;
+}
+
 int corewar(const int ac, const char **av)
 {
-    global_data_t global_data = {0, 0, {0}, NULL, NULL, 0, -1, 0};
+    global_data_t global_data = {0, 0, {0}, NULL, NULL, 0, -1, 0, CYCLE_TO_DIE};
     byte_t *virtual_memory = init_memory(ac, av, &global_data);
-    long cycles_nbr = 0;
-    int r_val = 0;
+    size_t tdump = ((global_data.dump_val >= 0) ? (global_data.dump_val) : (0));
 
-    if (virtual_memory == NULL) {
-        print_error("corewar", "Can't initialize the virtual memory.");
+    if (virtual_memory == NULL)
         return EPITECH_FAILURE;
-    }
     if (global_data.dump_val == 0)
         dump_vm(virtual_memory, &global_data);
-    while (global_data.alive_champions_nbr > 1) {
+    while (global_data.alive_champions_nbr > 1 || (global_data.cycles <= tdump
+            && tdump > 0)) {
         global_data.cycles += 1;
-        cycles_nbr = global_data.cycles;
         execute_tick(virtual_memory, &global_data);
-        if (cycles_nbr == global_data.dump_val)
+        if (global_data.cycles == tdump) {
             dump_vm(virtual_memory, &global_data);
+            global_data.alive_champions_nbr = 0;
+        }
     }
-    r_val = print_winner(global_data.champions, global_data.cycles);
-    nfree(3, virtual_memory, global_data.champions, global_data.streams);
-    return r_val;
+    return end_game(&global_data, virtual_memory);
 }
