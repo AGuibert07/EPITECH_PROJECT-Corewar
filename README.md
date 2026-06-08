@@ -32,5 +32,5 @@ MEM_SIZE modulo.
 ```
 
 ### Technologies Used
-- **Coding language** C
-- **Terminal User Interface (TUI)** ncurses
+- **Coding language**: C
+- **Terminal User Interface (TUI)**: ncurses
